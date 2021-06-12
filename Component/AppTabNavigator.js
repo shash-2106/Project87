@@ -3,10 +3,11 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import DonorScreen from '../screens/DonorScreen';
 import VolunteerScreen from '../screens/VolunteerScreen';
+import {AppStackNavigator} from '../Component/AppStackNavigator';
 
 export const TabNavigator = createBottomTabNavigator({
    Donate:{screen:DonorScreen},
-   Volunteer:{screen:VolunteerScreen}
+   Volunteer:{screen:AppStackNavigator}
  },
  {
    defaultNavigationOptions:({navigation})=>({

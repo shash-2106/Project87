@@ -42,7 +42,7 @@ export default class VolunteerScreen extends Component{
         subtitle={item.cost}
         titleStyle={{ color: 'black', fontWeight: 'bold' }}
         rightElement={
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity  onPress={()=>{this.props.navigation.navigate("DonorDetails", {"details":item})}} style={styles.button}>
               <Text style={{color:'#ffff'}}>View</Text>
             </TouchableOpacity>
           }

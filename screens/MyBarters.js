@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { StyleSheet, Text, View, TextInput,TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput,TouchableOpacity, FlatList } from 'react-native';
 import db from '../config';
 import firebase from 'firebase';
 import {Header, Icon, Card, ListItem} from 'react-native-elements';
-import { ThemeContext } from 'react-navigation';
+
 
 export default class MyBarters extends React.Component{
     constructor(){
@@ -39,8 +39,8 @@ export default class MyBarters extends React.Component{
     renderItem=({item,i})=>(
         <ListItem key={i}
         title={item.book_name}
-        subtitle={"donated by"+item.donateRequest_by+"\nstatus"+item.status}
-        leftElement={<Icon name="book" type="font-awesome" color='black'></Icon>}
+        subtitle={"donated by : "+item.donateRequest_by+"\nstatus : "+item.status}
+       
         titleStyle={{color:'black',fontWeight:'bold'}}
         rightElement={
             <TouchableOpacity>
