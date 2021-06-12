@@ -43,8 +43,20 @@ db.collection("my_barters").add({
    request_id:this.state.requestId,
    donateRequest_by:this.state.donorName,
    volunteer_id:this.state.userId,
-    status:"interested to donate"
+    status:"interested to volunteer"
 })
+}
+addNotifications=()=>{
+    var message = this.state.userName + "has shown interest in receiving item";
+    db.collection("all_notifications").add({
+        "targeted_user_id":this.state.donorId,
+        "volunteer_id":this.state.userId,
+        "request_id":this.state.requestId,
+        "item_name":this.state.itemName,
+        "date":firebase.firestore.FieldValue.serverTimestamp(),
+        "notification_status":"unread",
+        "message":message
+    })
 }
     render(){
         return(
@@ -68,6 +80,7 @@ db.collection("my_barters").add({
              <View>
                  {this.state.donorId!=this.state.userId?(
                      <TouchableOpacity style={styles.button} onPress={()=>{this.addBarters()
+                        this.addNotifications()
                     this.props.navigation.navigate("MyBarters")}}>
                         <Text>I want to volunteer to receive</Text>
                     </TouchableOpacity>

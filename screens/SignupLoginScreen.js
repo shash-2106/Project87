@@ -38,7 +38,8 @@ firebase.auth().createUserWithEmailAndPassword(email,password).then((response)=>
     last_name:this.state.lastName,
     contact:this.state.contact,
     address:this.state.address,
-    email_id:this.state.email
+    email_id:this.state.email,
+    isItemRequestActive:false
 })
 return alert("User added successfully","",[{text:'ok',onPress:()=>{this.setState({
     isModalVisible:false

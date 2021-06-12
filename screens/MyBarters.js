@@ -35,15 +35,52 @@ export default class MyBarters extends React.Component{
         this.getVolunteerDetails(this.state.volunteerId)
         this.getAllBarters()
     }
+    sendItem=(itemDetails)=>{
+        if(itemDetails.status=="Item Sent"){
+            var status = "Donor Interested"
+            db.collection("all_barters").doc(itemDetails.doc_id).update({
+                "status":"Donor Interested"
+            })
+            this.sendNotification(itemDetails,status)
+        }
+        else{
+            var status = "Item Sent"
+            db.collection("all_barters").doc(itemDetails.doc_id).update({
+                "status":"Item Sent"
+            })
+            this.sendNotification(itemDetails,status)
+        }
+    }
+    sendNotification=(itemDetails,requestStatus)=>{
+        var requestId = itemDetails.request_id
+     
+        var volunteerId = itemDetails.volunteer_id
+        
+        db.collection("all_notifications").where("request_id","==",requestId).where("volunteer_id","==",volunteerId).get().then((snapshot)=>{snapshot.forEach((doc)=>{
+            var message = ""
+            if(requestStatus=="Item Sent"){
+                message = this.state.donorName + "sent you item"
+            }
+            else{
+                message = this.state.donorName + "has shown interest in donating the item"
+            }
+            db.collection("all_notifications").doc(doc.id).update({
+                "message":message,
+                "notification_status":"unread",
+                "date":firebase.firestore.FieldValue.serverTimestamp()
+            })
+        })})
+    }
+
     keyExtractor = (item,index)=>index.toString()
     renderItem=({item,i})=>(
         <ListItem key={i}
-        title={item.book_name}
+        title={item.item_name}
         subtitle={"donated by : "+item.donateRequest_by+"\nstatus : "+item.status}
        
         titleStyle={{color:'black',fontWeight:'bold'}}
         rightElement={
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this.sendItem(item)}}>
                 <Text>Exchange</Text>
             </TouchableOpacity>
         }
