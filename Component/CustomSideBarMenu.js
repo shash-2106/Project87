@@ -13,7 +13,7 @@ export default class CustomSideBarMenu extends React.Component{
                 <View style={styles.logOutContainer}>
                     <TouchableOpacity style={styles.logOutButton}
                     onPress={()=>{this.props.navigation.navigate('SignupLoginScreen')
-                    firebase.auth().signOut()}}>
+                   firebase.auth().signOut()}}>
                         <Text style={styles.logOutText}>Log Out</Text>
                     </TouchableOpacity>
                     

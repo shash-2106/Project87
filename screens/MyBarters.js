@@ -38,31 +38,29 @@ export default class MyBarters extends React.Component{
     sendItem=(itemDetails)=>{
         if(itemDetails.status=="Item Sent"){
             var status = "Donor Interested"
-            db.collection("all_barters").doc(itemDetails.doc_id).update({
+            db.collection("my_barters").doc(itemDetails.doc_id).update({
                 "status":"Donor Interested"
             })
             this.sendNotification(itemDetails,status)
         }
         else{
-            var status = "Item Sent"
-            db.collection("all_barters").doc(itemDetails.doc_id).update({
-                "status":"Item Sent"
+            var status = "Book Sent"
+            db.collection("all_donations").doc(itemDetails.doc_id).update({
+                "request_status":"Book Sent"
             })
             this.sendNotification(itemDetails,status)
         }
     }
-    sendNotification=(itemDetails,requestStatus)=>{
+    sendNotification=(itemDetails,status)=>{
         var requestId = itemDetails.request_id
-     
         var volunteerId = itemDetails.volunteer_id
-        
-        db.collection("all_notifications").where("request_id","==",requestId).where("volunteer_id","==",volunteerId).get().then((snapshot)=>{snapshot.forEach((doc)=>{
+        db.collection("all_notifications").where("request_id","==",requestId).where("donor_id","==",volunteerId).get().then((snapshot)=>{snapshot.forEach((doc)=>{
             var message = ""
             if(requestStatus=="Item Sent"){
-                message = this.state.donorName + "sent you item"
+                message = this.state.volunteerName + "sent you book"
             }
             else{
-                message = this.state.donorName + "has shown interest in donating the item"
+                message = this.state.volunteerName + "has shown interest in receiving the item"
             }
             db.collection("all_notifications").doc(doc.id).update({
                 "message":message,
@@ -71,7 +69,6 @@ export default class MyBarters extends React.Component{
             })
         })})
     }
-
     keyExtractor = (item,index)=>index.toString()
     renderItem=({item,i})=>(
         <ListItem key={i}

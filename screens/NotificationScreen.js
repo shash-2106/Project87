@@ -14,16 +14,18 @@ export default class NotificationScreen extends React.Component{
         }
     }
     getNotifications=()=>{
+        alert(this.state.userId)
         db.collection("all_notifications").where("notification_status","==","unread").where("targeted_user_id","==",this.state.userId).onSnapshot((snapshot)=>{
-            var all_notifications=[]
-            snapshot.docs.map((doc)=>{
-                var notifications = doc.data()
-                notifications["doc_id"]=doc.id
-                all_notifications.push(notifications)
-            })
-            this.setState({
-                allNotifications:all_notifications
-            })
+          var all_notification=[]
+          snapshot.docs.map((doc)=>{
+              var notifications=doc.data();
+              notifications["doc_id"]=doc.id
+              all_notification.push(notifications);
+          })
+          this.setState({
+              allNotifications:all_notification
+          })
+          
         })
     }
     componentDidMount(){
@@ -46,7 +48,7 @@ export default class NotificationScreen extends React.Component{
     render(){
         return(
 <View style={{flex:1}}>
-
+<Text>{this.state.allNotifications.length}</Text>
 <View style={{flex:0.9}}>
 {this.state.allNotifications.length==0
 ?(<View><Text>You have no notifications</Text></View>):
