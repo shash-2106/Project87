@@ -5,6 +5,8 @@ import firebase from 'firebase';
 import db from '../config'
 import MyHeader from '../Component/MyHeader';
 
+import SwipableFlatlist from '../Component/SwipableFlatlist';
+
 export default class NotificationScreen extends React.Component{
     constructor(){
         super();
@@ -31,7 +33,7 @@ export default class NotificationScreen extends React.Component{
     componentDidMount(){
         this.getNotifications()
     }
-    keyExtractor=(item,index)=>index.toString()
+   /* keyExtractor=(item,index)=>index.toString()
     renderItem=({item,index})=>{
         return(
             <ListItem key={index} 
@@ -43,7 +45,7 @@ export default class NotificationScreen extends React.Component{
 
             </ListItem>
         )
-    }
+    }*/
     
     render(){
         return(
@@ -52,12 +54,7 @@ export default class NotificationScreen extends React.Component{
 <View style={{flex:0.9}}>
 {this.state.allNotifications.length==0
 ?(<View><Text>You have no notifications</Text></View>):
-(<FlatList
-keyExtractor={this.keyExtractor}
-data={this.state.allNotifications}
-renderItem={this.renderItem}>
-
-</FlatList>)}
+(<SwipableFlatlist/>)}
 </View>
 </View>
         )
