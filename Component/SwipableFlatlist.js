@@ -17,7 +17,7 @@ export default class SwipableFlatlist extends React.Component{
         }
     }
     getNotifications=()=>{
-        alert(this.state.userId)
+       
         db.collection("all_notifications").where("notification_status","==","unread").where("targeted_user_id","==",this.state.userId).onSnapshot((snapshot)=>{
           var all_notification=[]
           snapshot.docs.map((doc)=>{
@@ -34,7 +34,7 @@ export default class SwipableFlatlist extends React.Component{
     componentDidMount(){
         this.getNotifications()
     }
-    renderItem=({item,index})=>{
+  /*  renderItem=({item,index})=>{
         return(
             <ListItem key={index} 
          
@@ -45,11 +45,19 @@ export default class SwipableFlatlist extends React.Component{
 
             </ListItem>
         )
-    }
-    renderHiddenItem=()=>(
-        <View>
-            <View>
-                <Text>Mark as Read</Text>
+    }*/
+   renderItem=(data)=>(
+        <Animated.View>
+            <ListItem
+            title={data.item.item_name} titleStyle={{color:"black",fontWeight:'bold'}} subtitle={data.item.message} bottomDivider>
+
+            </ListItem>
+        </Animated.View>
+    )
+   renderHiddenItem=()=>(
+        <View style={styles.rowBack}>
+            <View style={[styles.backRightBtn,styles.backRightBtnRight]}>
+                <Text style={styles.backTextWhite}>Mark as Read</Text>
             </View>
         </View>
     )
@@ -72,7 +80,7 @@ export default class SwipableFlatlist extends React.Component{
         return(
             <View style={styles.container}>
          
-           <SwipeListView disableRightSwipe 
+         <SwipeListView disableRightSwipe 
            data={this.state.allNotifications} 
            renderItem={this.renderItem} 
             renderHiddenItem={this.renderHiddenItem} 
@@ -85,4 +93,33 @@ export default class SwipableFlatlist extends React.Component{
         )
     }
 }
-const styles = StyleSheet.create({ container: { backgroundColor: "white", flex: 1 }, backTextWhite: { color: "#FFF", fontWeight: "bold", fontSize: 15, textAlign: "center", alignSelf: "flex-start" }, rowBack: { alignItems: "center", backgroundColor: "#29b6f6", flex: 1, flexDirection: "row", justifyContent: "space-between", paddingLeft: 15 }, backRightBtn: { alignItems: "center", bottom: 0, justifyContent: "center", position: "absolute", top: 0, width: 100 }, backRightBtnRight: { backgroundColor: "#29b6f6", right: 0 } });
+const styles = StyleSheet.create({ 
+container:{ 
+backgroundColor: "white", 
+flex: 1 
+}, 
+backTextWhite: { 
+color: "#FFF", 
+fontWeight: "bold", 
+fontSize: 15, 
+textAlign: "center", 
+alignSelf: "flex-start" 
+}, 
+rowBack: { 
+alignItems: "center", 
+backgroundColor: "#bfebff", 
+flex: 1, flexDirection: "row", 
+justifyContent: "space-between", 
+paddingLeft: 15 
+},
+backRightBtn: { 
+alignItems: "center", 
+bottom: 0, 
+justifyContent: "center", 
+position: "absolute", 
+top: 0, width: 100 }, 
+backRightBtnRight: { 
+backgroundColor: "#bfebff", 
+right: 0 
+} 
+});
