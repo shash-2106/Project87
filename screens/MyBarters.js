@@ -37,16 +37,16 @@ export default class MyBarters extends React.Component{
     }
     sendItem=(itemDetails)=>{
         if(itemDetails.status=="Item Sent"){
-            var status = "Donor Interested"
+            var status = "Volunteer Interested"
             db.collection("my_barters").doc(itemDetails.doc_id).update({
-                "status":"Donor Interested"
+                "status":"Volunteer Interested"
             })
             this.sendNotification(itemDetails,status)
         }
         else{
             var status = "Book Sent"
-            db.collection("all_donations").doc(itemDetails.doc_id).update({
-                "request_status":"Book Sent"
+            db.collection("donations").doc(itemDetails.doc_id).update({
+                "request_status":"Item Sent"
             })
             this.sendNotification(itemDetails,status)
         }
@@ -57,10 +57,10 @@ export default class MyBarters extends React.Component{
         db.collection("all_notifications").where("request_id","==",requestId).where("donor_id","==",volunteerId).get().then((snapshot)=>{snapshot.forEach((doc)=>{
             var message = ""
             if(requestStatus=="Item Sent"){
-                message = this.state.volunteerName + "sent you book"
+                message = this.state.volunteerName + " sent you item"
             }
             else{
-                message = this.state.volunteerName + "has shown interest in receiving the item"
+                message = this.state.volunteerName + " has shown interest in receiving the item"
             }
             db.collection("all_notifications").doc(doc.id).update({
                 "message":message,

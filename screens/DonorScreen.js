@@ -23,11 +23,14 @@ export default class DonorScreen extends React.Component{
     createUniqueId(){
         return Math.random().toString(36).substring(7);
       }
+      componentDidMount(){
+        this.getItemRequest();
+        this.getIsItemRequestActive();
+      }
       getItemRequest=()=>{
         var itemRequest = db.collection("donations").where("user_id","==",this.state.userId).get().then((snapshot)=>{snapshot.forEach((doc)=>{
-          if(doc.data().item_status!="received"){
-            alert(doc.id)
-            alert(doc.data().item_name)
+          if(doc.data().item_status!="donated"){
+           
             this.setState({
               requestId:doc.data().request_id,
               requestedItemName:doc.data().item_name,
@@ -41,12 +44,13 @@ export default class DonorScreen extends React.Component{
           isItemRequestActive:doc.data().isItemRequestActive,
           userDocId:doc.id
         })})})
+      //  alert(this.state.userDocId)
       }
-    addItem=()=>{
+   
+    addItem=async()=>{
       var amount = 0.25*this.state.cost
     
-     
-       // alert(this.state.costForVolunteer)
+
        var userId = this.state.userId;
        var randomRequestId = this.createUniqueId();
               db.collection("donations").add({
@@ -56,12 +60,19 @@ export default class DonorScreen extends React.Component{
            "user_id":userId,
            "item_status":"donation_ready"
        })
+       await this.getItemRequest()
+       db.collection("users").where("email_id","==",userId).get().then((snapshot)=>{
+         snapshot.forEach((doc)=>{db.collection("users").doc(doc.id).update({
+           isItemRequestActive:true
+         })})
+       })
        this.setState({
            itemName:'',
            cost:'',
-           costForVolunteer:''
+           costForVolunteer:'',
+           isItemRequestActive:true
        })
-       alert("Item ready to be donated")
+    
     }
     sendNotification=()=>{
         db.collection("users").where("email_id","==",this.state.userId).get().then((snapshot)=>{snapshot.forEach((doc)=>{
@@ -72,7 +83,7 @@ export default class DonorScreen extends React.Component{
        var itemName = doc.data().item_name
        db.collection("all_notifications").add({
          "targeted_user_id":volunteerId,
-         "message":name + " " + lastName + "received the item" + itemName,
+         "message":name + " " + lastName + " donated the item " + itemName,
          "notification_status":"unread",
          "item_Name":itemName  
        })
@@ -81,9 +92,9 @@ export default class DonorScreen extends React.Component{
         })})
       }
       updateItemRequestStatus=()=>{
-        alert(this.state.docId)
+       
       db.collection("donations").doc(this.state.docId).update({
-        item_status:"received",
+        item_status:"donated",
       
       })
       db.collection("users").where("email_id","==",this.state.userId).get().then((snapshot)=>{snapshot.forEach((doc)=>{
@@ -92,38 +103,41 @@ export default class DonorScreen extends React.Component{
         })
       })})
       }
-      receivedItems=(itemName)=>{
+      donatedItems=(itemName)=>{
         var userId = this.state.userId
         var requestId = this.state.requestId
-        db.collection("received_items").add({
+        db.collection("donated_items").add({
           "user_id":userId,
           "item_name":itemName,
           "request_id":requestId,
-          "itemStatus":"received"
+          "itemStatus":"donated"
         })
       }
     render(){
         if(this.state.isItemRequestActive==true){
             return(
+              
               <View style={{flex:1, justifyContent:'center'}}>
                 <View style={{borderColor:"blue",borderWidth:2,justifyContent:'center',alignItems:'center',padding:10,margin:10}}>
+                
                   <Text>Item Name</Text>
                   <Text>{this.state.requestedItemName}</Text>
                 </View>
                 <View style={{borderColor:"blue",borderWidth:2,justifyContent:'center',alignItems:'center',padding:10,margin:10}}>
-                  <Text>Book Status</Text>
+                  <Text>Item Status</Text>
                   <Text>{this.state.itemStatus}</Text>
                 </View>
                 <TouchableOpacity onPress={()=>{this.sendNotification()
-                this.updateBookRequestStatus()
-                this.receivedItems(this.state.requesteditemName)
+                this.updateItemRequestStatus()
+                this.donatedItems(this.state.requesteditemName)
                 }}>
-                  <Text>I received the item</Text>
+                  <Text>I donated the item</Text>
                 </TouchableOpacity>
               </View>
             )
           }
           else{
+           
         return(
             <View>
             
